@@ -1,58 +1,58 @@
-import { Component } from 'react';
 import { Statistics } from './Statistics/Statistics';
 import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
+import { useState } from 'react';
 
-class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  };
+const initialFeedback = {
+  good: 0,
+  neutral: 0,
+  bad: 0,
+};
 
-  addFeedback = e => {
+function App() {
+  const [feedback, setFeedback] = useState(initialFeedback);
+
+  const addFeedback = e => {
     const type = e.target.id;
 
-    this.setState(state => ({
-      [type]: state[type] + 1,
+    setFeedback(prevFeedback => ({
+      ...prevFeedback,
+      [type]: prevFeedback[type] + 1,
     }));
   };
 
-  countTotalFeedback = () => {
-    return Object.values(this.state).reduce((acc, curr) => acc + curr, 0);
+  const countTotalFeedback = () => {
+    return Object.values(feedback).reduce((acc, curr) => acc + curr, 0);
   };
 
-  countPositiveFeedbackPercentage = () => {
-    return Math.round((this.state.good / this.countTotalFeedback()) * 100) || 0;
+  const countPositiveFeedbackPercentage = () => {
+    return Math.round((feedback.good / countTotalFeedback()) * 100) || 0;
   };
 
-  // --- RENDER
-  render() {
-    return (
-      <div
-        style={{
-          height: '100vh',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: 40,
-          color: '#010101',
-          flexDirection: 'column',
-        }}
-      >
-        <FeedbackOptions
-          options={['good', 'neutral', 'bad']}
-          onLeaveFeedback={this.addFeedback}
-        />
-        <Statistics
-          good={this.state.good}
-          neutral={this.state.neutral}
-          bad={this.state.bad}
-          positivePercentage={this.countPositiveFeedbackPercentage()}
-          totalFeedback={this.countTotalFeedback()}
-        />
-      </div>
-    );
-  }
+  return (
+    <div
+      style={{
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: 40,
+        color: '#010101',
+        flexDirection: 'column',
+      }}
+    >
+      <FeedbackOptions
+        options={['good', 'neutral', 'bad']}
+        onLeaveFeedback={addFeedback}
+      />
+      <Statistics
+        good={feedback.good}
+        neutral={feedback.neutral}
+        bad={feedback.bad}
+        positivePercentage={countPositiveFeedbackPercentage()}
+        totalFeedback={countTotalFeedback()}
+      />
+    </div>
+  );
 }
 
 export default App;
